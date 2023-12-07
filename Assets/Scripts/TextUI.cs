@@ -19,7 +19,7 @@ public class TextUI : MonoBehaviour
     public TMP_Text textCurrentGameSpeed;
 
     private Tower tower;
-    public GameObject bulletPrefab; // Assign the bullet prefab in the Inspector
+    public GameObject bulletPrefab; 
     //private Bullet bullet;
     private CircleSpawner daySpawn;
 
@@ -48,8 +48,8 @@ public class TextUI : MonoBehaviour
         textMaxHealth.text = Mathf.FloorToInt(Tower.maxHealth).ToString();
         textHpBar.text = Mathf.FloorToInt(Tower.health).ToString() + "/" + Mathf.FloorToInt(Tower.maxHealth).ToString();
         textCrit.text = Tower.critical.ToString("F1");
-        textMaxGameSpeed.text = ButtonManager.currentMaxTimeScale.ToString();
-        textCurrentGameSpeed.text = Time.timeScale.ToString();
+        textMaxGameSpeed.text = ButtonManager.currentMaxTimeScale.ToString("F1");
+        textCurrentGameSpeed.text = Time.timeScale.ToString("F1");
     }
     public void ShowDamageText(GameObject spawnPosition, float damageReceive, bool isCritical)
     {

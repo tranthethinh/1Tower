@@ -9,9 +9,11 @@ public class CircleSpawner : MonoBehaviour
     public float timeBetweenWaves = 5f; // Delay between waves
     public float minObjectsToSpawn = 10; // Minimum number of objects to spawn in a wave (increased)
     public float maxObjectsToSpawn = 20; // Maximum number of objects to spawn in a wave (increased)
-    public GameObject objectToSpawn; // The object you want to spawn
+    public GameObject objectToSpawn;
+    public GameObject EnemySpeed;
+    public GameObject EnemyBoss;
     public static int currentDay = 1;
-
+    private Vector2 spawnPosition;
     private void Start()
     {
        
@@ -35,17 +37,35 @@ public class CircleSpawner : MonoBehaviour
 
                     yield return new WaitForSeconds(delay);
 
-                    Vector2 spawnPosition = center.position + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * rangeSpawn, Mathf.Sin(angle * Mathf.Deg2Rad) * rangeSpawn, 0f);
-                    Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+                    spawnPosition = center.position + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * rangeSpawn, Mathf.Sin(angle * Mathf.Deg2Rad) * rangeSpawn, 0f);
                     
+                    if (currentDay % 3 == 0 && numberOfWavesPerDay==3)
+                    {
+                        if (Random.Range(0, 2) == 0)
+                        {
+                            Instantiate(EnemySpeed, spawnPosition, Quaternion.identity);
+                        }
+                        else
+                        {
+                            Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+                        }
+                    }
+                    else
+                    {
+                        Instantiate(objectToSpawn, spawnPosition, Quaternion.identity);
+                    }
                 }
 
                 yield return new WaitForSeconds(timeBetweenWaves);
             }
 
             currentDay++;
+            if (currentDay % 10 == 0)
+            {
+                // Spawn a boss enemy
+                Instantiate(EnemyBoss, spawnPosition, Quaternion.identity);
+            }
 
-           
         }
     }
     public int GetCurrentDay()

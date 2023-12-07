@@ -8,7 +8,7 @@ public class DestroyDamageText : MonoBehaviour
     private TMP_Text textMesh;
     private float disappearTimer = 1f;
     private Color textColor;
-    private float scaleSpeed = 0.5f; // Adjust the scale decrease speed
+    private float scaleSpeed = 0.5f;
 
     private void Awake()
     {

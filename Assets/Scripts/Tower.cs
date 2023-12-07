@@ -9,7 +9,7 @@ public class Tower : MonoBehaviour
     private GameObject target;
     public Transform firePoint;
     public GameObject bulletPrefab;
-    public static float range = 15f;
+    public static float range = 10f;
     public static float fireRate = 1f;
     private float fireCooldown = 0f;
     public static int damage = 50;
@@ -18,7 +18,7 @@ public class Tower : MonoBehaviour
     public static float critical = 0;
     public static float gameSpeed = 1;
     public static bool canContinue = true;
-
+    public GameObject objectRange;
     private DetectEnemyInRange enemyDetector;
     List<GameObject> detectedEnemies;
 
@@ -35,7 +35,6 @@ public class Tower : MonoBehaviour
         enemyDetector = GetComponentInChildren<DetectEnemyInRange>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         UpdateTarget();
@@ -95,7 +94,8 @@ public class Tower : MonoBehaviour
             }
         }
 
-        if (nearestEnemy != null && shortestDistance <= range)
+        //if (nearestEnemy != null && shortestDistance <= range)
+        if (nearestEnemy != null)
         {
             target = nearestEnemy;
         }
@@ -124,10 +124,15 @@ public class Tower : MonoBehaviour
     {
         fireRate += 0.1f;
     }
+   
+
     public void AddRange()
     {
-        range += 0.1f;
+        objectRange.transform.localScale *= 1.1f;
+        range *= 1.1f;
+        
     }
+    
     public void AddMaxHealth()
     {
         maxHealth *= 1.1f;
@@ -164,7 +169,7 @@ public class Tower : MonoBehaviour
     }
     public static void ResetGame()
     {
-        // Reset your variables to their initial values
+        // Reset variables to their initial values
         range = 15f;
         fireRate = 1f;
         damage = 50;

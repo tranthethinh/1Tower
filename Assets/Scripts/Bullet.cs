@@ -47,7 +47,8 @@ public class Bullet : MonoBehaviour
     {
         if (col.CompareTag("Enemy"))
         {
-            // Destroy both this GameObject and the colliding "Enemy" GameObject
+            
+
             Destroy(gameObject);
             //Destroy(col.gameObject);
             Enemy enemy = col.GetComponent<Enemy>();

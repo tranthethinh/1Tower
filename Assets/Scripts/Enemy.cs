@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public float startSpeed = 0.5f;
+    private float startSpeed = 0.5f;
 
-    [HideInInspector]
+    
     public float speed;
 
-    private float startHealth = 100;
-    private float enemyHealth;
+    protected float startHealth = 100;
+    protected float enemyHealth;
 
     public int worth = 50;
 
@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
     {
         return enemyHealth;
     }
-    void Start()
+    protected void Start()
     {
         speed = startSpeed;
         enemyHealth = startHealth;
@@ -86,8 +86,7 @@ public class Enemy : MonoBehaviour
 
         PlayerStats.coin += worth;
         Destroy(gameObject);
-        //cai nay lam enemy ko xoa ngay nen de am thanh die o hieu ung die
-        //StartCoroutine(DelayedDestroy());
+       
     }
 
 

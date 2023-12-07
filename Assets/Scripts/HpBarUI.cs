@@ -15,7 +15,7 @@ public class HpBarUI : MonoBehaviour
         tower = GameObject.FindWithTag("Tower").GetComponent<Tower>();
     }
 
-    // Update is called once per frame
+    
     void LateUpdate()
     {
         healthBar.value = Tower.health / Tower.maxHealth;
