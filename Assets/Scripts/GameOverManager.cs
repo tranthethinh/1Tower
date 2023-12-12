@@ -36,12 +36,12 @@ public class GameOverManager : MonoBehaviour
     {
         
         Time.timeScale = 1f; // Resume the game.
-        Tower.ResetGame();
+        GameManager.ResetGame();
         SceneManager.LoadScene(1);
     }
     public void Quit()
     {
-        Tower.ResetGame();
+        GameManager.ResetGame();
         Time.timeScale = 1f; // Resume the game.
         SceneManager.LoadScene(0);
     }

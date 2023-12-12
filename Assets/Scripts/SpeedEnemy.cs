@@ -7,7 +7,7 @@ public class SpeedEnemy : Enemy
 {
     
     public float speedMultiplier = 1.5f;
-
+    private float speedEnemyHealthMultiplier = 0.5f;
     protected new void Start()
     {
         
@@ -15,6 +15,8 @@ public class SpeedEnemy : Enemy
 
         
         speed *= speedMultiplier;
+        startHealth *= speedEnemyHealthMultiplier;
+        enemyHealth = startHealth;
     }
 
     

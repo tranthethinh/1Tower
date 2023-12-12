@@ -5,12 +5,12 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveSystem {
-    public static void Save(Tower tower)
+    public static void Save()
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/player.tt";
         FileStream stream = new FileStream(path, FileMode.Create);
-        PlayerData data = new PlayerData(tower);
+        PlayerData data = new PlayerData();
         formatter.Serialize(stream, data);
         stream.Close();
     }

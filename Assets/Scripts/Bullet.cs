@@ -8,7 +8,7 @@ public class Bullet : MonoBehaviour
 
     private float speed = 7f;
 
-    public int damage;
+    public float damage;
     public float critical;
 
     public void Seek(Transform _target)
@@ -47,13 +47,26 @@ public class Bullet : MonoBehaviour
     {
         if (col.CompareTag("Enemy"))
         {
-            
 
             Destroy(gameObject);
-            //Destroy(col.gameObject);
             Enemy enemy = col.GetComponent<Enemy>();
-            bool isCritical = Random.Range(0, 100) < critical;
-            enemy.TakeDamage(damage,isCritical);
+            bool isOneHit = Random.Range(0f, 100f) < Tower.oneHitPersentage;
+            if (isOneHit)
+            {
+                //Destroy(col.gameObject);
+                enemy.Die();
+                
+            }
+            else
+            {
+                
+                bool isCritical = Random.Range(0f, 100f) < critical;
+                
+
+                enemy.TakeDamage(damage, isCritical);
+            }
+            
+            
         }
     }
     

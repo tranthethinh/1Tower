@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 public class ButtonManager : MonoBehaviour
 {
     
-    private int attackSpeedUpgradeCoin = 10;
-    private int damageUpgradeCoin = 10;
-    private int healthUpgradeCoin = 10;
-    private int rangeUpgradeCoin = 10;
-    private int criticalUpgradeCoin = 10;
-    private int gameSpeedUpgradeCoin = 10;
-
+    public static int attackSpeedUpgradeCoin = 10;
+    public static int damageUpgradeCoin = 10;
+    public static int healthUpgradeCoin = 10;
+    public static int rangeUpgradeCoin = 10;
+    public static int criticalUpgradeCoin = 10;
+    public static int gameSpeedUpgradeCoin = 10;
+    public static int regenHealthUpgradeCoin = 10;
+    public static int oneHitUpgradeCoin = 10;
     public static float currentMaxTimeScale = 1;
 
     private Tower tower;
@@ -22,11 +25,71 @@ public class ButtonManager : MonoBehaviour
     private bool isPaused = false;
     public GameObject pauseUI;
     public GameObject buttonSpeedUI;
+
+
+    public Button buttonAttackSpeed;
+    public Button buttonRange;
+    public Button buttonDamage;
+    public Button buttonMaxHealth;
+    public Button buttonCrit;
+    public Button buttonGameSpeed;
+    public Button buttonRegenHealth;
+    public Button buttonOneHit;
+
+
+    
     private void Start()
     {
         tower = GameObject.FindWithTag("Tower").GetComponent<Tower>();
 
-        currentMaxTimeScale = Tower.gameSpeed;
+        //currentMaxTimeScale = Tower.gameSpeed;
+    }
+
+    private void Update()
+    {
+        SetColorAllButton();
+    }
+    void SetColorAllButton()
+    {
+        SetButtonColor(attackSpeedUpgradeCoin, buttonAttackSpeed);
+        SetButtonColor(damageUpgradeCoin, buttonDamage);
+        SetButtonColor(healthUpgradeCoin, buttonMaxHealth);
+        SetButtonColor(rangeUpgradeCoin, buttonRange);
+        SetButtonColor(criticalUpgradeCoin, buttonCrit);
+        SetButtonColor(gameSpeedUpgradeCoin, buttonGameSpeed);
+        SetButtonColor(regenHealthUpgradeCoin, buttonRegenHealth);
+        SetButtonColor(oneHitUpgradeCoin, buttonOneHit);
+}
+    public void SetButtonColor(int coinNeedToUpgrade, Button button)
+    {
+        Color newColor;
+
+       
+        if (PlayerStats.coin > coinNeedToUpgrade && !isPaused)
+        {
+         
+            newColor = Color.green;
+            //Debug.Log("Button color set to green");
+        }
+        else
+        {
+            newColor = Color.gray;
+            //Debug.Log("Button color set to gray");
+        }
+
+      
+        Image buttonImage = button.GetComponent<Image>();
+
+        
+        if (buttonImage != null)
+        {
+          
+            buttonImage.color = newColor;
+        }
+        else
+        {
+            Debug.LogError("ButtonAttackSpeed does not have an Image component.");
+        }
     }
     public void TogglePause()
     {
@@ -47,8 +110,8 @@ public class ButtonManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseUI.SetActive(true);
         buttonSpeedUI.SetActive(false);
-        Tower.canContinue = true;
-        tower.saveTower();
+        GameManager.canContinue = true;
+        SaveSystem.Save();
 
     }
 
@@ -61,8 +124,8 @@ public class ButtonManager : MonoBehaviour
     }
     public void Exit()
     {
-        Tower.canContinue = true;
-        tower.saveTower();
+        GameManager.canContinue = true;
+        SaveSystem.Save();
 
         SceneManager.LoadScene(0);
         Time.timeScale = 1f;
@@ -75,7 +138,8 @@ public class ButtonManager : MonoBehaviour
         {
             PlayerStats.coin -= attackSpeedUpgradeCoin;
             tower.AddFireRate();
-            attackSpeedUpgradeCoin = Mathf.RoundToInt(attackSpeedUpgradeCoin * coinIncreaseMultiplier);
+            attackSpeedUpgradeCoin = Mathf.RoundToInt(attackSpeedUpgradeCoin * 1.5f);
+            
         }
         else
         {
@@ -89,6 +153,7 @@ public class ButtonManager : MonoBehaviour
             PlayerStats.coin -= damageUpgradeCoin;
             tower.AddDamage();
             damageUpgradeCoin = Mathf.RoundToInt(damageUpgradeCoin * coinIncreaseMultiplier);
+            
         }
         else
         {
@@ -114,7 +179,7 @@ public class ButtonManager : MonoBehaviour
         {
             PlayerStats.coin -= rangeUpgradeCoin;
             tower.AddRange();
-            rangeUpgradeCoin = Mathf.RoundToInt(rangeUpgradeCoin * coinIncreaseMultiplier);
+            rangeUpgradeCoin = Mathf.RoundToInt(rangeUpgradeCoin * 3);
         }
         else
         {
@@ -134,13 +199,40 @@ public class ButtonManager : MonoBehaviour
             Debug.Log("Not enough money, Paused");
         }
     }
+    public void upgradeRegenHealth()
+    {
+        if (PlayerStats.coin > regenHealthUpgradeCoin && !isPaused)
+        {
+            PlayerStats.coin -= regenHealthUpgradeCoin;
+            tower.AddRegenHealth();
+            regenHealthUpgradeCoin = Mathf.RoundToInt(regenHealthUpgradeCoin * coinIncreaseMultiplier);
+        }
+        else
+        {
+            Debug.Log("Not enough money, Paused");
+        }
+    }
+    public void upgradeOneHitPercentage()
+    {
+        if (PlayerStats.coin > oneHitUpgradeCoin && !isPaused)
+        {
+            PlayerStats.coin -= oneHitUpgradeCoin;
+            tower.AddOneHitPercentage();
+            oneHitUpgradeCoin = Mathf.RoundToInt(oneHitUpgradeCoin * 1.5f);
+        }
+        else
+        {
+            Debug.Log("Not enough money, Paused");
+        }
+    }
     public void upgradeGameSpeed()
     {
         if (PlayerStats.coin > gameSpeedUpgradeCoin && !isPaused)
         {
             PlayerStats.coin -= gameSpeedUpgradeCoin;
-            currentMaxTimeScale += 0.1f;
-            gameSpeedUpgradeCoin = Mathf.RoundToInt(gameSpeedUpgradeCoin * coinIncreaseMultiplier);
+            currentMaxTimeScale += 0.5f;
+            Time.timeScale = currentMaxTimeScale;
+            gameSpeedUpgradeCoin = Mathf.RoundToInt(gameSpeedUpgradeCoin * 2);
         }
         else
         {
@@ -151,11 +243,52 @@ public class ButtonManager : MonoBehaviour
     {
         if( Time.timeScale < currentMaxTimeScale && !isPaused)
         {
-            Time.timeScale += 0.1f;
+            Time.timeScale += 0.5f;
         }
         else
         {
             Time.timeScale = 1;
         }
+    }
+   
+
+    public int AttackSpeedUpgradeCoin
+    {
+        get { return attackSpeedUpgradeCoin; }
+    }
+
+    public int DamageUpgradeCoin
+    {
+        get { return damageUpgradeCoin; }
+    }
+
+    public int HealthUpgradeCoin
+    {
+        get { return healthUpgradeCoin; }
+    }
+
+    public int RangeUpgradeCoin
+    {
+        get { return rangeUpgradeCoin; }
+    }
+
+    public int CriticalUpgradeCoin
+    {
+        get { return criticalUpgradeCoin; }
+    }
+
+    public int GameSpeedUpgradeCoin
+    {
+        get { return gameSpeedUpgradeCoin; }
+    }
+
+    public int RegenHealthUpgradeCoin
+    {
+        get { return regenHealthUpgradeCoin; }
+    }
+
+    public int OneHitUpgradeCoin
+    {
+        get { return oneHitUpgradeCoin; }
     }
 }

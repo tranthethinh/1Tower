@@ -9,15 +9,19 @@ public class Tower : MonoBehaviour
     private GameObject target;
     public Transform firePoint;
     public GameObject bulletPrefab;
-    public static float range = 10f;
-    public static float fireRate = 1f;
-    private float fireCooldown = 0f;
-    public static int damage = 50;
-    public static float maxHealth = 100;
+    public static float range ;
+    public static float fireRate;
+    private float fireCooldown;
+    public static float damage;
+    public static float maxHealth;
     public static float health;
-    public static float critical = 0;
-    public static float gameSpeed = 1;
-    public static bool canContinue = true;
+    public static float critical;
+    //public static float gameSpeed;
+    public static float regenHealth;
+    public static float oneHitPersentage;
+
+
+    
     public GameObject objectRange;
     private DetectEnemyInRange enemyDetector;
     List<GameObject> detectedEnemies;
@@ -29,10 +33,15 @@ public class Tower : MonoBehaviour
     {
 
         audioSource = GetComponent<AudioSource>();
-        health = maxHealth;
+        //health = maxHealth;
         // Initialize the cooldown timer
         fireCooldown = 0f;
+
+        // Start the coroutine for health regeneration
+        StartCoroutine(RegenerateHealth());
+
         enemyDetector = GetComponentInChildren<DetectEnemyInRange>();
+
     }
 
     void Update()
@@ -86,11 +95,14 @@ public class Tower : MonoBehaviour
 
         foreach (GameObject enemy in detectedEnemies)
         {
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance)
+            if (enemy != null)
             {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
+                float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distanceToEnemy < shortestDistance)
+                {
+                    shortestDistance = distanceToEnemy;
+                    nearestEnemy = enemy;
+                }
             }
         }
 
@@ -116,8 +128,8 @@ public class Tower : MonoBehaviour
             Debug.Log("GameOver");
             GameOverManager.instance.gameIsOver = true;
             GameOverManager.instance.GameOver();
-            canContinue = false;
-            saveTower();
+            GameManager.canContinue = false;
+            SaveSystem.Save();
         }
     }
     public void AddFireRate()
@@ -140,46 +152,41 @@ public class Tower : MonoBehaviour
     }
     public void AddDamage()
     {
-        damage += 10;
+        damage += 1;
     }
     public void AddCrit()
     {
         critical += 0.1f;
     }
-    
-    public void saveTower()
+    public void AddRegenHealth()
     {
-        SaveSystem.Save(this);
+        regenHealth += 0.1f;
     }
-    public static bool LoadTower()
+    IEnumerator RegenerateHealth()
     {
-        PlayerData data = SaveSystem.Load();
-
-        CircleSpawner.currentDay = data.currentDay;
-        range = data.range;
-        fireRate = data.fireRate;
-        damage = data.damage;
-        maxHealth = data.maxHealth;
-        health = data.health;
-        critical = data.critical;
-        PlayerStats.coin = data.coin;
-        gameSpeed = data.gameSpeed;
-
-        return data.hasData;
+        while (true)
+        {
+            if (health < maxHealth)
+            {
+                health += regenHealth;
+                if (health > maxHealth)
+                {
+                    health = maxHealth;
+                }
+                yield return new WaitForSeconds(1);
+            }
+            else
+            {
+                health = maxHealth;
+                yield return null;
+            }
+        }
     }
-    public static void ResetGame()
+    public void AddOneHitPercentage()
     {
-        // Reset variables to their initial values
-        range = 15f;
-        fireRate = 1f;
-        damage = 50;
-        maxHealth = 100;
-        health = maxHealth; // Reset health to maxHealth
-        critical = 0.0f;
-        gameSpeed = 1.0f;
-        CircleSpawner.currentDay = 1;
-        PlayerStats.coin = 400;
-
-        
+        oneHitPersentage += 0.1f;
     }
+
+   
+
 }

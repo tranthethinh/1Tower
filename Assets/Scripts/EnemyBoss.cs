@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Boss : Enemy
 {
     private float bossSpeedMultiplier = 0.5f;
-    private int bossWorthMultiplier = 10;
+    private int bossWorthMultiplier = 22;
     private float bossHealthMultiplier = 10f;
 
     

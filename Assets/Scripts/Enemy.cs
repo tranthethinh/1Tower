@@ -10,10 +10,10 @@ public class Enemy : MonoBehaviour
     
     public float speed;
 
-    protected float startHealth = 100;
+    protected float startHealth = 5;
     protected float enemyHealth;
 
-    public int worth = 50;
+    protected int worth = 5;
 
     //public GameObject deathEffect;
 
@@ -34,10 +34,15 @@ public class Enemy : MonoBehaviour
     protected void Start()
     {
         speed = startSpeed;
-        enemyHealth = startHealth;
+        enemyHealth = startHealth*(CircleSpawner.currentDay/10+1);//increase each 10 days
+        worth *= (CircleSpawner.currentDay / 10+1);
+
+
         textUI = GameObject.Find("GameManager").GetComponent<TextUI>();
 
         audioSource = GetComponent<AudioSource>();
+
+        
     }
 
     public void TakeDamage(float amount, bool _isCritical)
@@ -79,7 +84,7 @@ public class Enemy : MonoBehaviour
 
    
 
-    void Die()
+    public void Die()
     {
         audioSource.PlayOneShot(deathSound);
         isDead = true;
